@@ -138,35 +138,64 @@ function Landscape() {
         if (isDrawing) {
             const mouseX = Math.floor(e.clientX / cellSize)
             const mouseY = Math.floor(e.clientY / cellSize)
+
+            if (prevMouseX == null) {
+                prevMouseX = mouseX
+            }
+
+            if (prevMouseY == null) {
+                prevMouseY = mouseY
+            }
+
             if (currElement === EMPTY || (currElement !== EMPTY && isEmpty(mouseX, mouseY) && currElement !== SEED)) {
-                const xDiff = mouseX - prevMouseX;
-                const yDiff = mouseY - prevMouseY;
-                const p1 = [prevMouseX, prevMouseY]
-                const p2 = [mouseX, mouseY]
+                if (currElement === WALL || currElement === EMPTY) {
+                    const xDiff = mouseX - prevMouseX;
+                    const yDiff = mouseY - prevMouseY;
+                    const p1 = [prevMouseX, prevMouseY]
+                    const p2 = [mouseX, mouseY]
 
-                if (Math.abs(xDiff) >= Math.abs(yDiff)) {
-                    const shift = yDiff / xDiff;
-                    const leftPoint = (mouseX > prevMouseX) ? p1 : p2;
-                    const rightPoint = (mouseX > prevMouseX) ? p2 : p1;
+                    if (Math.abs(xDiff) >= Math.abs(yDiff)) {
+                        const shift = yDiff / xDiff;
+                        const leftPoint = (mouseX > prevMouseX) ? p1 : p2;
+                        const rightPoint = (mouseX > prevMouseX) ? p2 : p1;
 
-                    let y = leftPoint[1]
+                        let y = leftPoint[1]
+                        let prevY = leftPoint[1]
 
-                    for (let x = leftPoint[0]; x <= rightPoint[0]; x++) {
-                        setBuf(x, Math.floor(y), currElement);
-                        y += shift;
+                        for (let x = leftPoint[0]; x <= rightPoint[0]; x++) {
+                            setBuf(x, Math.floor(y), currElement);
+                            y += shift;
+
+                            if (Math.floor(y) != Math.floor(prevY)) {
+                                setBuf(x + 1, Math.floor(prevY), currElement);
+                                console.log("123")
+                            }
+
+                            prevY = y;
+                        }
+                    }
+                    else {
+                        const shift = xDiff / yDiff;
+                        const topPoint = (mouseY > prevMouseY) ? p1 : p2;
+                        const bottomPoint = (mouseY > prevMouseY) ? p2 : p1;
+
+                        let x = topPoint[0]
+                        let prevX = topPoint[0]
+
+                        for (let y = topPoint[1]; y <= bottomPoint[1]; y++) {
+                            setBuf(Math.floor(x), y, currElement);
+                            x += shift;
+
+                            if (Math.floor(x) != Math.floor(prevX)) {
+                                setBuf(Math.floor(prevX), y + 1, currElement);
+                            }
+
+                            prevX = x;
+                        }
                     }
                 }
                 else {
-                    const shift = xDiff / yDiff;
-                    const topPoint = (mouseY > prevMouseY) ? p1 : p2;
-                    const bottomPoint = (mouseY > prevMouseY) ? p2 : p1;
-
-                    let x = topPoint[1]
-
-                    for (let y = topPoint[0]; y <= bottomPoint[0]; y++) {
-                        setBuf(Math.floor(x), y, currElement);
-                        x += shift;
-                    }
+                    setBuf(mouseX, mouseY, currElement);
                 }
             } else if (currElement == SEED && isSand(mouseX,mouseY)){
                 seeds[getIndex(mouseX,mouseY)] = Math.floor(Math.random()*20);
