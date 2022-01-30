@@ -7,10 +7,10 @@ function Main() {
 
     return (
       <div className="screen">
-          <video autoPlay muted onEnded={() => setEnded(true)} src="Scape.mp4" className="video"/>
+          <video autoPlay muted onEnded={() => setEnded(true)} src="SCAPEH@B.mp4" className="video"/>
 
             {ended ? <Link to="/landscape" className="link">
-                <img src="StartButton.png"/>
+                <img src="StartButton.png" className="start-img"/>
             </Link> : null} 
       </div>
     );
