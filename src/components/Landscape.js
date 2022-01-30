@@ -9,8 +9,7 @@ function Landscape() {
         init();
         const interval = setInterval(() => {
             tick();
-        placeSand();
-    },  0.1);
+        }, 1);
 
         return () => clearInterval(interval);
     }, [])
@@ -135,10 +134,18 @@ function Landscape() {
         }
     }
 
-    const placeSand = () => {
+    const placeSand = (e) => {
         if (isDrawing) {
-            const mouseX  = prevMouseX;
-            const mouseY = prevMouseY;
+            const mouseX = Math.floor(e.clientX / cellSize)
+            const mouseY = Math.floor(e.clientY / cellSize)
+
+            if (prevMouseX == null) {
+                prevMouseX = mouseX
+            }
+
+            if (prevMouseY == null) {
+                prevMouseY = mouseY
+            }
 
             if (currElement === EMPTY || (currElement !== EMPTY && isEmpty(mouseX, mouseY) && currElement !== SEED)) {
                 if (currElement === WALL || currElement === EMPTY) {
@@ -161,7 +168,6 @@ function Landscape() {
 
                             if (Math.floor(y) != Math.floor(prevY)) {
                                 setBuf(x + 1, Math.floor(prevY), currElement);
-                                console.log("123")
                             }
 
                             prevY = y;
@@ -295,22 +301,15 @@ function Landscape() {
         draw();
     }
     
-    const startDraw = (e) => {
+    const startDraw = () => { 
         isDrawing = true;
-        placeSand(e);
+        
     }
 
     const stopDraw = () => {
         isDrawing = false;
         prevMouseX = null;
         prevMouseY = null;
-    }
-
-    const move = (e) => {
-        if (isDrawing) {
-            prevMouseX = Math.floor(e.clientX / cellSize);
-            prevMouseY = Math.floor(e.clientY / cellSize);
-        }
     }
 
     return (
@@ -348,7 +347,7 @@ function Landscape() {
                 </div>
             </div>
 
-            <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} onMouseDownCapture={startDraw} onMouseUp={stopDraw} onMouseMove={move} ></canvas>
+            <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} onMouseDown={startDraw} onMouseUp={stopDraw} onMouseMove={placeSand}></canvas>
         </>
     )
 
