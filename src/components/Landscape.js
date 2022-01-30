@@ -1,6 +1,5 @@
 import "./Landscape.css";
 import React, { useState, useRef, useEffect } from 'react'
-import { SketchPicker } from 'react-color'
 
 function Landscape() {
 
@@ -10,7 +9,9 @@ function Landscape() {
         init();
         const interval = setInterval(() => {
             tick();
-        }, 1);
+        placeSand();
+    },  0.1);
+
         return () => clearInterval(interval);
     }, [])
 
@@ -134,18 +135,10 @@ function Landscape() {
         }
     }
 
-    const placeSand = (e) => {
+    const placeSand = () => {
         if (isDrawing) {
-            const mouseX = Math.floor(e.clientX / cellSize)
-            const mouseY = Math.floor(e.clientY / cellSize)
-
-            if (prevMouseX == null) {
-                prevMouseX = mouseX
-            }
-
-            if (prevMouseY == null) {
-                prevMouseY = mouseY
-            }
+            const mouseX  = prevMouseX;
+            const mouseY = prevMouseY;
 
             if (currElement === EMPTY || (currElement !== EMPTY && isEmpty(mouseX, mouseY) && currElement !== SEED)) {
                 if (currElement === WALL || currElement === EMPTY) {
@@ -302,8 +295,9 @@ function Landscape() {
         draw();
     }
     
-    const startDraw = () => {
+    const startDraw = (e) => {
         isDrawing = true;
+        placeSand(e);
     }
 
     const stopDraw = () => {
@@ -312,9 +306,15 @@ function Landscape() {
         prevMouseY = null;
     }
 
+    const move = (e) => {
+        if (isDrawing) {
+            prevMouseX = Math.floor(e.clientX / cellSize);
+            prevMouseY = Math.floor(e.clientY / cellSize);
+        }
+    }
+
     return (
         <>
-
             <div className="top-bar-container">
                 <div className="top-bar">
                     <div className="icon-container" style={{marginRight: "auto"}}>
@@ -348,7 +348,7 @@ function Landscape() {
                 </div>
             </div>
 
-            <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} onMouseDown={startDraw} onMouseUp={stopDraw} onMouseMove={placeSand}></canvas>
+            <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} onMouseDownCapture={startDraw} onMouseUp={stopDraw} onMouseMove={move} ></canvas>
         </>
     )
 
