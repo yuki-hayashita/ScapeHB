@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ScapeHB/static/css/main.75f8b225.css",
+    "main.js": "/ScapeHB/static/js/main.028d94f0.js",
+    "index.html": "/ScapeHB/index.html",
+    "main.75f8b225.css.map": "/ScapeHB/static/css/main.75f8b225.css.map",
+    "main.028d94f0.js.map": "/ScapeHB/static/js/main.028d94f0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.75f8b225.css",
+    "static/js/main.028d94f0.js"
+  ]
+}
