@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/ScapeHB/static/css/main.156b391e.css",
-    "main.js": "/ScapeHB/static/js/main.42f6c329.js",
-    "index.html": "/ScapeHB/index.html",
-    "main.156b391e.css.map": "/ScapeHB/static/css/main.156b391e.css.map",
-    "main.42f6c329.js.map": "/ScapeHB/static/js/main.42f6c329.js.map"
+    "main.css": "./static/css/main.156b391e.css",
+    "main.js": "./static/js/main.ae10b09f.js",
+    "index.html": "./index.html",
+    "main.156b391e.css.map": "./static/css/main.156b391e.css.map",
+    "main.ae10b09f.js.map": "./static/js/main.ae10b09f.js.map"
   },
   "entrypoints": [
     "static/css/main.156b391e.css",
-    "static/js/main.42f6c329.js"
+    "static/js/main.ae10b09f.js"
   ]
 }
