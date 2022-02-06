@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/ScapeHB/static/css/main.156b391e.css",
-    "main.js": "/ScapeHB/static/js/main.832b69d9.js",
+    "main.js": "/ScapeHB/static/js/main.79564c4e.js",
     "index.html": "/ScapeHB/index.html",
     "main.156b391e.css.map": "/ScapeHB/static/css/main.156b391e.css.map",
-    "main.832b69d9.js.map": "/ScapeHB/static/js/main.832b69d9.js.map"
+    "main.79564c4e.js.map": "/ScapeHB/static/js/main.79564c4e.js.map"
   },
   "entrypoints": [
     "static/css/main.156b391e.css",
-    "static/js/main.832b69d9.js"
+    "static/js/main.79564c4e.js"
   ]
 }
