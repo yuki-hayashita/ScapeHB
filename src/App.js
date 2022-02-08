@@ -6,10 +6,13 @@ import Landscape from "./components/Landscape";
 function App() {
 
   return (
-    <Routes>
-      <Route path="/" element={<Main />} />
-      <Route path="/landscape" element={<Landscape />} />
-    </Routes>
+    // <Routes>
+    //   {/*<Route path="/" element={<Main />} />*/}
+    //   {/*<Route path="/landscape" element={<Landscape />} />*/}
+    //
+    // </Routes>
+    //   <Main/>
+      <Landscape/>
   );
 }
 
