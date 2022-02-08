@@ -84,16 +84,24 @@ function Landscape() {
     }
 
     const setBuf = (x, y, element) => {
-        if (currElement === EMPTY || getBuf(x,y) !== WALL) {
+        if (element === EMPTY || getBuf(x,y) !== WALL) {
             buffer[x + y * width] = element;
         }
     }
 
     const setBufConditional = (x, y, eToBeReplaced, element) => {
+        if ((element === EMPTY || getBuf(x,y) !== WALL) && getBuf(x,y) === eToBeReplaced) {
+            buffer[x + y * width] = element;
+        }
+    }
+
+    const setBufConditionalNot = (x, y, eToBeReplaced, element) => {
         if ((element === EMPTY || getBuf(x,y) !== WALL) && getBuf(x,y) !== eToBeReplaced) {
             buffer[x + y * width] = element;
         }
     }
+
+
 
     const getBuf = (x,y) => {
         if (x < 0 || x >= width ||
@@ -306,12 +314,12 @@ function Landscape() {
                     } else if (r > 0.97) {
                         const randomColor = Math.floor(Math.random() * 16777215).toString(16);
                         //colors[FLOWER] = '#' + randomColor;
-                        setBufConditional(x, y, PLANT, FLOWER);
+                        setBufConditionalNot(x, y, PLANT, FLOWER);
                         if (r > 0.98) {
-                            setBufConditional(x - 1, y + 1, PLANT, FLOWER);
-                            setBufConditional(x + 1, y + 1, PLANT, FLOWER);
-                            setBufConditional(x - 1, y - 1, PLANT, FLOWER);
-                            setBufConditional(x + 1, y - 1, PLANT, FLOWER);
+                            setBufConditionalNot(x - 1, y + 1, PLANT, FLOWER);
+                            setBufConditionalNot(x + 1, y + 1, PLANT, FLOWER);
+                            setBufConditionalNot(x - 1, y - 1, PLANT, FLOWER);
+                            setBufConditionalNot(x + 1, y - 1, PLANT, FLOWER);
                         }
                     }
 
@@ -396,7 +404,8 @@ function Landscape() {
                     var thunderY = y;
                     let xMove = getThunderBuf(thunderX,thunderY);
                     thunderX = thunderX+xMove;
-                    while (getBuf(thunderX,thunderY+1) === EMPTY && thunderY+1 < height){
+                    while ((getBuf(thunderX,thunderY+1) === EMPTY || getBuf(thunderX,thunderY+1) === PLANT
+                        || getBuf(thunderX,thunderY+1) === FLOWER) && thunderY+1 < height){
                         //setBuf(thunderX, thunderY, EMPTY)
                         //setBuf(thunderX, y-2, EMPTY)
                         //setBuf(thunderX,thunderY+1,THUNDER);
@@ -408,13 +417,25 @@ function Landscape() {
                         thunderX = thunderX+xMove;
                         thunderY += 1;
                     }
-                    if (getBuf(x-2,y-1)==EMPTY && getBuf(x,y-1)==EMPTY && getBuf(x+2,y-1)==EMPTY){
+                    if (neighbor(x,y,PLANT) || neighbor(x,y,FLOWER)) {
+                        setBuf(x, y, FIRE);
+                        if (r < 0.2 && (getBuf(x, y + 1) == PLANT || getBuf(x, y + 1) == FLOWER)) {
+                            setBuf(x, y + 1, FIRE);
+                        }
+                        if (r < 0.2 && (getBuf(x - 1, y + 1) == PLANT || getBuf(x - 1, y + 1) == FLOWER)) {
+                            setBuf(x - 1, y + 1, FIRE);
+                        }
+                        if (r < 0.2 && (getBuf(x + 1, y + 1) == PLANT || getBuf(x + 1, y + 1) == FLOWER)) {
+                            setBuf(x + 1, y + 1, FIRE);
+                        }
+                    }
+                    if (getBuf(x-2,y-1)!==THUNDER && getBuf(x,y-1)!==THUNDER && getBuf(x+2,y-1)!==THUNDER){
                         var eraseX = x;
-                        setBuf(eraseX,y,EMPTY);
+                        setBufConditional(eraseX,y,THUNDER,EMPTY);
                         eraseX += getThunderBuf(eraseX,y);
-                        setBuf(eraseX, y+1, EMPTY);
+                        setBufConditional(eraseX, y+1,THUNDER, EMPTY);
                         eraseX += getThunderBuf(eraseX,y);
-                        setBuf(eraseX, y+2, EMPTY);
+                        setBufConditional(eraseX, y+2,THUNDER, EMPTY);
 
                     }
                     // for (var i =thunderY; i<height; i++){
