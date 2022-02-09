@@ -32,7 +32,10 @@ function Landscape() {
     var FIRE = 6
     var SMOKE = 7;
     var THUNDER = 8;
-    var ASH = THUNDER + 1;
+    var CLOUD = 9
+    var STORMCLOUD = 10;
+    var SNOW = 11
+    var ASH = SNOW + 1;
     var SAND = ASH + 1;
     var colors = {};
 
@@ -44,7 +47,10 @@ function Landscape() {
     colors[FLOWER] = '#b53524'
     colors[FIRE] = '#FFA500';
     colors[SMOKE] = '#90adb0';
-    colors[THUNDER] = '#FBF864'
+    colors[THUNDER] = '#FBF864';
+    colors[CLOUD] = '#effeff';
+    colors[STORMCLOUD] = '#A3B0AE';
+    colors[SNOW]  = '#F7FBFB';
     colors[ASH] = '#90adb0';
     colors[SAND] = '#d29b0b';
 
@@ -145,6 +151,18 @@ function Landscape() {
 
     const thunder = () => {
         currElement = THUNDER;
+    }
+    
+    const cloud = () => {
+        currElement = CLOUD;
+    }
+
+    const stormCloud = () => {
+        currElement = STORMCLOUD;
+    }
+
+    const snow = () => {
+        currElement = SNOW;
     }
 
     const randColor = () => {
@@ -272,6 +290,7 @@ function Landscape() {
 
         for (var y = height-1; y >= 0; y--) {
             var moveHoriz = [];
+            var moveVert = [];
             for (var x = 0; x < width; x++) {
                 // set dir to +1 or -1 randomly
                 var dir = Math.random() < 0.5 ? -1 : 1;
@@ -285,16 +304,18 @@ function Landscape() {
                         setBuf(x, y, getBuf(x + dir, y + 1)); // clear sand
                         setBuf(x + dir, y + 1, sand); // move sand
                     }
-                } else if (getBuf(x, y) == WATER) { // if we have water
+                } else if (getBuf(x, y) === WATER) { // if we have water
+                    var e = getBuf(x, y);
                     if (getBuf(x, y + 1) == EMPTY) { // if empty below
                         setBuf(x, y, EMPTY); // clear water
-                        setBuf(x, y + 1, WATER); // move water
+                        setBuf(x, y + 1, e); // move water
                     } else if (getBuf(x + dir, y) == EMPTY) {
                         moveHoriz.push({
                             x: x,
                             y: y,
                             nx: x + dir,
-                            element: WATER
+                            ny: y,
+                            element: e
                         });
                     }
                 } else if (getBuf(x, y) == SEED){
@@ -441,6 +462,72 @@ function Landscape() {
                     // for (var i =thunderY; i<height; i++){
                     //     setBuf(thunderX,y+2,THUNDER);
                     // }
+                } else if (getBuf(x,y) == CLOUD || getBuf(x,y) == STORMCLOUD) {
+                    var e = getBuf(x,y);
+                    // var dirX = Math.random() < 0.5 ? -1 : 1;
+                    // var dirY = Math.random() < 0.5 ? -1 : 1;
+
+                    if (getBuf(x,y) == CLOUD && (neighbor(x,y,WATER) || neighbor(x,y,STORMCLOUD))){
+                        setBuf(x,y,STORMCLOUD);
+                    }
+
+                    if (getBuf(x,y) == STORMCLOUD) {
+                        var r = Math.random();
+                        if (isEmpty(x,y+1) && r>0.995){
+                            setBuf(x,y+1,WATER);
+                        } else if (isEmpty(x,y+1) && r<0.0001){
+                            setBuf(x,y+1,THUNDER);
+                        }
+                    }
+
+                    var dirX;
+                    var dirY;
+                    var rX = Math.random();
+                    var rY = Math.random();
+
+                    const dirSwitchX = 0.9;
+                    const dirSwitchY = 0.95;
+
+                    if (rX < dirSwitchX) {
+                        dirX = 0;
+                    } else if (rX <= (1-dirSwitchX)/2 + dirSwitchX) {
+                        dirX = 1;
+                    } else {
+                        dirX = -1;
+                    }
+
+                    if (rY < dirSwitchY) {
+                        dirY = 0;
+                    } else if (rY <= (1-dirSwitchY)/2 + dirSwitchY) {
+                        dirY = 1;
+                    } else {
+                        dirY = -1;
+                    }
+                    if (getBuf(x + dir, y + dirY) == EMPTY) {
+                        moveHoriz.push({
+                            x: x,
+                            y: y,
+                            nx: x + dirX,
+                            ny: y + dirY,
+                            element: e
+                        });
+                    }
+                } else if (getBuf(x,y) == SNOW) {
+                    const dir = Math.random() < 0.5 ? -1 : 1;
+                    const r = Math.random();
+                    if (isEmpty(x,y+1) && r >= 0.5) {
+                        // setBuf(x,y,EMPTY);
+                        // setBuf(x,y+1,SNOW);
+                        moveHoriz.push({
+                            x: x,
+                            y: y,
+                            nx: x + dir,
+                            ny: y + 1,
+                            element: SNOW
+                        });
+                    }
+
+
                 }
             }
 
@@ -450,7 +537,7 @@ function Landscape() {
                 if (getBuf(m.x, m.y) == m.element &&
                     getBuf(m.nx, m.y) == EMPTY) {
                     setBuf(m.x, m.y, EMPTY); // clear element
-                    setBuf(m.nx, m.y, m.element); // move element
+                    setBuf(m.nx, m.ny, m.element); // move element
                 }
             }
         }
@@ -521,6 +608,18 @@ function Landscape() {
 
                     <div className="icon-container">
                         <img src="flame.png" className="icon" onClick={thunder} />
+                    </div>
+
+                    <div className="icon-container">
+                        <img src="flame.png" className="icon" onClick={cloud} />
+                    </div>
+
+                    <div className="icon-container">
+                        <img src="flame.png" className="icon" onClick={stormCloud} />
+                    </div>
+
+                    <div className="icon-container">
+                        <img src="flame.png" className="icon" onClick={snow} />
                     </div>
 
                     <div className="icon-container">
