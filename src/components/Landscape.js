@@ -26,15 +26,16 @@ function Landscape() {
     var EMPTY = 0;
     var WALL = 1;
     var WATER = 2;
-    var SEED = 3
-    var PLANT = 4;
-    var FLOWER = 5;
-    var FIRE = 6
-    var SMOKE = 7;
-    var THUNDER = 8;
-    var CLOUD = 9
-    var STORMCLOUD = 10;
-    var SNOW = 11
+    var SEEDFALL = 3;
+    var SEED = 4;
+    var PLANT = 5;
+    var FLOWER = 6;
+    var FIRE = 7
+    var SMOKE = 8;
+    var THUNDER = 9;
+    var CLOUD = 10
+    var STORMCLOUD = 11;
+    var SNOW = 12
     var ASH = SNOW + 1;
     var SAND = ASH + 1;
     var colors = {};
@@ -42,7 +43,9 @@ function Landscape() {
     colors[EMPTY] = '#b5d9dd';
     colors[WALL] = '#444';
     colors[WATER] = '#3c95dc';
-    colors[SEED] = '#3fa752';
+
+    colors[SEED] = '#84de83';
+    colors[SEEDFALL] = '#84de83';
     colors[PLANT] = '#3fa752';
     colors[FLOWER] = '#b53524'
     colors[FIRE] = '#FFA500';
@@ -134,7 +137,7 @@ function Landscape() {
     }
 
     const plant = () => {
-        currElement = SEED;
+        currElement = SEEDFALL;
     }
 
     const wall = () => {
@@ -263,7 +266,7 @@ function Landscape() {
                 else {
                     setBuf(mouseX, mouseY, currElement);
                 }
-            } else if (currElement == SEED && isSand(mouseX,mouseY)) {
+            } else if (currElement == SEEDFALL && isSand(mouseX,mouseY)) {
                 seeds[getIndex(mouseX,mouseY)] = Math.floor(Math.random()*20);
                 setBuf(mouseX, mouseY, SEED);
             } else if (currElement == FIRE) {
@@ -283,6 +286,15 @@ function Landscape() {
         } return false;
     }
 
+    const neighborBigger = (x,y,element) => {
+        if (getBuf(x-1, y) >= element || getBuf(x+1, y) >= element || getBuf(x-1, y-1) >= element ||
+            getBuf(x-1, y+1) >= element || getBuf(x, y-1) >= element || getBuf(x, y+1) >= element ||
+            getBuf(x, y-1) >= element || getBuf(x, y+1) >= element
+        ) {
+            return true;
+        } return false;
+    }
+
     var emptyOrLiquid = [EMPTY, WATER];
     function update() {
 
@@ -294,7 +306,7 @@ function Landscape() {
             for (var x = 0; x < width; x++) {
                 // set dir to +1 or -1 randomly
                 var dir = Math.random() < 0.5 ? -1 : 1;
-                if (getBuf(x, y) >= ASH) { // if we have sand
+                if (getBuf(x, y) >= ASH || getBuf(x, y) === SEEDFALL) { // if we have sand
                     if (emptyOrLiquid.indexOf(getBuf(x, y + 1)) >= 0) { // if empty/liquid below
                         const sand = getBuf(x, y);
                         setBuf(x, y, getBuf(x, y + 1)); // clear sand
@@ -526,9 +538,12 @@ function Landscape() {
                             element: SNOW
                         });
                     }
-
-
+                } if (getBuf(x,y) === SEEDFALL && neighborBigger(x,y,SAND)  && getBuf(x,y-1) !== PLANT) {
+                    console.log("hello");
+                    setBuf(x,y-1,SEED);
+                    // setBuf(x,y+1, SEEDFALL);
                 }
+
             }
 
 
@@ -607,19 +622,19 @@ function Landscape() {
                     </div>
 
                     <div className="icon-container">
-                        <img src="flame.png" className="icon" onClick={thunder} />
+                        <img src="lightning.png" className="icon" onClick={thunder} />
                     </div>
 
                     <div className="icon-container">
-                        <img src="flame.png" className="icon" onClick={cloud} />
+                        <img src="Cloud.png" className="icon" onClick={cloud} />
                     </div>
 
                     <div className="icon-container">
-                        <img src="flame.png" className="icon" onClick={stormCloud} />
+                        <img src="StormCloud.png" className="icon" onClick={stormCloud} />
                     </div>
 
                     <div className="icon-container">
-                        <img src="flame.png" className="icon" onClick={snow} />
+                        <img src="snow.png" className="icon" onClick={snow} />
                     </div>
 
                     <div className="icon-container">
